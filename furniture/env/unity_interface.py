@@ -131,9 +131,10 @@ class UnityInterface(object):
         """
         atexit.register(self.close)
         cwd = os.getcwd()
-        if cwd == '/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task':
-            cwd = '/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture'
-        print("cwd", cwd)
+
+        cwd_check = cwd.split('/')  # modify path for 'custom-task' usage
+        if cwd_check[-1] != 'furniture':
+            cwd = os.path.join(cwd, 'furniture')
 
         file_name = 'binary/Furniture'
         file_name = (file_name.strip()
