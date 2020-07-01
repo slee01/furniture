@@ -10,27 +10,27 @@
   <texture builtin="flat" height="256" rgb1="1 1 1." rgb2=".2 .3 .4" type="skybox" width="256" />
         <texture builtin="checker" height="512" name="texplane" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" type="2d" width="512" />
         <material name="floorplane" reflectance="0.5" texrepeat="1 1" texture="texplane" texuniform="true" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/torso/base_link.STL" name="base_link" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/torso/base_link_collision.STL" name="base_link_collision" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/base/PEDESTAL.STL" name="PEDESTAL" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/base/pedestal_link_collision.STL" name="pedestal_link_collision" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/head/H0.STL" name="H0" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/head/H1.STL" name="H1" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/upper_shoulder/S0.STL" name="S0" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/lower_shoulder/S1.STL" name="S1" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/upper_elbow/E0.STL" name="E0" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/lower_elbow/E1.STL" name="E1" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/upper_forearm/W0.STL" name="W0" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/lower_forearm/W1.STL" name="W1" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/wrist/W2.STL" name="W2" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/robots/baxter/meshes/electric_gripper/fingers/paddle_tip.STL" name="paddle_tip" />
-  <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/grippers/meshes/two_finger_gripper/electric_gripper_base.STL" name="electric_gripper_base" />
-        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/grippers/meshes/two_finger_gripper/standard_narrow.STL" name="standard_narrow" />
-        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/grippers/meshes/two_finger_gripper/half_round_tip.STL" name="half_round_tip" />
-    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/objects/chair_agne_0007/leg1.stl" name="leg1" scale="0.0005 0.0005 0.0005" />
-        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/objects/chair_agne_0007/leg2.stl" name="leg2" scale="0.0005 0.0005 0.0005" />
-        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/objects/chair_agne_0007/seat.stl" name="seat" scale="0.0005 0.0005 0.0005" />
-        <texture file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/multi-task/furniture/env/models/assets/objects/../textures/light-wood.png" name="tex-light-wood" type="2d" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/torso/base_link.STL" name="base_link" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/torso/base_link_collision.STL" name="base_link_collision" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/base/PEDESTAL.STL" name="PEDESTAL" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/base/pedestal_link_collision.STL" name="pedestal_link_collision" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/head/H0.STL" name="H0" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/head/H1.STL" name="H1" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/upper_shoulder/S0.STL" name="S0" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/lower_shoulder/S1.STL" name="S1" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/upper_elbow/E0.STL" name="E0" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/lower_elbow/E1.STL" name="E1" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/upper_forearm/W0.STL" name="W0" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/lower_forearm/W1.STL" name="W1" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/wrist/W2.STL" name="W2" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/robots/baxter/meshes/electric_gripper/fingers/paddle_tip.STL" name="paddle_tip" />
+  <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/grippers/meshes/two_finger_gripper/electric_gripper_base.STL" name="electric_gripper_base" />
+        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/grippers/meshes/two_finger_gripper/standard_narrow.STL" name="standard_narrow" />
+        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/grippers/meshes/two_finger_gripper/half_round_tip.STL" name="half_round_tip" />
+    <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/objects/chair_agne_0007/leg1.stl" name="leg1" scale="0.0005 0.0005 0.0005" />
+        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/objects/chair_agne_0007/leg2.stl" name="leg2" scale="0.0005 0.0005 0.0005" />
+        <mesh file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/objects/chair_agne_0007/seat.stl" name="seat" scale="0.0005 0.0005 0.0005" />
+        <texture file="/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/env/models/assets/objects/../textures/light-wood.png" name="tex-light-wood" type="2d" />
         <material name="light-wood" reflectance="0.5" texrepeat="20 20" texture="tex-light-wood" texuniform="true" />
     </asset>
 

@@ -130,11 +130,10 @@ class UnityInterface(object):
         Launches a unity app in ./binary/ and connects to the @port.
         """
         atexit.register(self.close)
-        cwd = os.getcwd()
-
-        cwd_check = cwd.split('/')  # modify path for 'custom-task' usage
-        if cwd_check[-1] != 'furniture':
-            cwd = os.path.join(cwd, 'furniture')
+        # cwd = os.getcwd()
+        cwd = os.path.abspath(__file__)  # modify for general calling unity
+        cwd, _ = cwd.split('env')
+        print('cwd:', cwd)
 
         file_name = 'binary/Furniture'
         file_name = (file_name.strip()
