@@ -104,7 +104,7 @@ def get_args():
 
 
     parser.add_argument(
-        '--algo', default='a2c', help='algorithm to use: a2c | ppo | acktr')
+        '--algo', default='ppo', help='algorithm to use: a2c | ppo | acktr')
     parser.add_argument(
         '--gail-algo', default='standard', help='algorithm to use: standard | wasserstein | none')
     parser.add_argument(
@@ -144,7 +144,7 @@ def get_args():
     parser.add_argument(
         '--task-transition',
         action='store_true',
-        default=False,
+        default=True,
         help='do imitation learning with task transition model')
     parser.add_argument(
         '--task-curiosity-reward',
@@ -200,12 +200,12 @@ def get_args():
     parser.add_argument(
         '--posterior',
         action='store_true',
-        default=False,
+        default=True,
         help='do imitation learning with posterior')
     parser.add_argument(
         '--hierarchical-policy',
         action='store_true',
-        default=False,
+        default=True,
         help='train policy with latent variable')
     parser.add_argument(
         "--init_beta",
@@ -223,7 +223,7 @@ def get_args():
         "--latent-dim",
         action="store",
         type=int,
-        default=0,
+        default=4,
         help="latent size for the generator")
     parser.add_argument(
         '--gail-batch-size',
