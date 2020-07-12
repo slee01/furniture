@@ -6,6 +6,9 @@
 checkpoint
 log
 
+# PyCharm
+.idea
+
 # Vim
 .*.s[a-w][a-z]
 Session.vim
