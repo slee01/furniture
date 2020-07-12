@@ -26,125 +26,6 @@ from env.furniture_baxter import FurnitureBaxterEnv
 import env.transform_utils as T
 
 
-class FurnitureExampleEnv(FurnitureBaxterEnv):
-    """
-    Baxter robot environment with a reaching task as an example.
-    """
-
-    def __init__(self, config):
-        """
-        Args:
-            config: general configuration for the environment.
-        """
-        ###################################################
-        #  Change @config before creating a MuJoCo scene  #
-        ###################################################
-
-        # set the furniture to be always the simple blocks
-        config.furniture_id = 0
-        # set subtask_ob for getting target object
-        config.subtask_ob = True
-
-        # create a MuJoCo environment based on @config
-        super().__init__(config)
-
-        # set environment- and task-specific configurations
-        self._env_config.update({
-            "max_episode_steps": 50,
-            "distance_reward": 1,
-            "success_reward": 5,
-        })
-
-    def _reset(self, furniture_id=None, background=None):
-        """
-        Resets simulation and variables to compute reward.
-
-        Args:
-            furniture_id: ID of the furniture model to reset.
-            background: name of the background scene to reset.
-        """
-        super()._reset(furniture_id, background)
-
-        ##########################################
-        # Set variables needed to compute reward #
-        ##########################################
-
-        # pick an object to reach
-        assert self._subtask_part1 != -1
-        self._target_body = self._object_names[self._subtask_part1]
-
-    def _place_objects(self):
-        """
-        Returns the initial positions and rotations of furniture parts.
-
-        Returns:
-            xpos((float * 3) * n_obj): x,y,z position of the objects in world frame
-            xquat((float * 4) * n_obj): quaternion of the objects
-        """
-        ######################################################
-        # Specify initial position and rotation of each part #
-        ######################################################
-        pos_init = [[-0.3, -0.2, 0.05], [0.1, -0.2, 0.05]]
-        quat_init = [[1, 0, 0, 0], [1, 0, 0, 0]]
-        return pos_init, quat_init
-
-    def _get_obs(self):
-        """
-        Returns the current observation.
-        """
-        obs = super()._get_obs()
-        return obs
-
-    def _step(self, a):
-        """
-        Takes a simulation step with action @a.
-        """
-        # zero out left arm's action and only use right arm
-        a[6:12] = 0
-
-        # simulate action @a
-        ob, _, _, _ = super(FurnitureBaxterEnv, self)._step(a)
-
-        # compute your own reward
-        reward, done, info = self._compute_reward(a)
-
-        # store some information for log
-        info['right_arm_action'] = a[0:6]
-        info['right_gripper_action'] = a[12]
-
-        return ob, reward, done, info
-
-    def _compute_reward(self, a):
-        """
-        Computes reward for the task.
-        """
-        info = {}
-
-        # control penalty
-        ctrl_reward = self._ctrl_reward(a)
-
-        # distance-based reward
-        hand_pos = np.array(self.sim.data.site_xpos[self.right_eef_site_id])
-        dist = T.l2_dist(hand_pos, self._get_pos(self._target_body))
-        distance_reward = -self._env_config["distance_reward"] * dist
-
-        # reward for successful reaching
-        success_reward = 0
-        if dist < 0.05:
-            success_reward = self._env_config["success_reward"]
-
-        # add up all rewards
-        reward = ctrl_reward + distance_reward + success_reward
-        done = False
-
-        # log each component of reward
-        info['reward_ctrl'] = ctrl_reward
-        info['reward_distance'] = distance_reward
-        info['reward_success'] = success_reward
-
-        return reward, done, info
-
-
 def main(args):
     """
     Shows basic rollout code for simulating the environment.
@@ -153,7 +34,7 @@ def main(args):
 
     # make environment following arguments
     from env import make_env
-    env = make_env('FurnitureExampleEnv', args)
+    env = make_env('FurnitureBaxterEnv', args)
 
     # define a random policy
     def policy_action(ob):
