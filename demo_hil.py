@@ -61,7 +61,7 @@ def main(config):
     act_dim = int(env.action_space.shape[0])
 
     args = get_args()
-    agent, actor_critic, post, discr, trans = get_model(args, env, obs_dim, act_dim, device)
+    agent, actor_critic, post, trans = get_model(args, env, obs_dim, act_dim, device)
 
     print("************************************************************************************************")
     print("0. task: ", args.env_name, " device: ", device)
@@ -72,17 +72,17 @@ def main(config):
         args.gail_experts_dir,
         "trajs_{}_{}.pt".format(args.env_name.split('-')[0].lower(), args.expert_algo))
 
-    gail_train_loader = torch.utils.data.DataLoader(
-        expert_dataset.ExpertDataset(args.env_name, file_name),
-        batch_size=args.gail_batch_size,
-        shuffle=True,
-        drop_last=True)
-
-    policy_train_loader = torch.utils.data.DataLoader(
-        policy_dataset.PolicyDataset(args.env_name, file_name),
-        batch_size=args.gail_batch_size,
-        shuffle=True,
-        drop_last=True)
+    # gail_train_loader = torch.utils.data.DataLoader(
+    #     expert_dataset.ExpertDataset(args.env_name, file_name),
+    #     batch_size=args.gail_batch_size,
+    #     shuffle=True,
+    #     drop_last=True)
+    #
+    # policy_train_loader = torch.utils.data.DataLoader(
+    #     policy_dataset.PolicyDataset(args.env_name, file_name),
+    #     batch_size=args.gail_batch_size,
+    #     shuffle=True,
+    #     drop_last=True)
 
     print("************************************************************************************************")
     if args.latent_space == 'continuous':
@@ -99,7 +99,7 @@ def main(config):
         rollouts = RolloutStorage(args.num_steps, args.num_processes,
                                   env.observation_space.shape, env.action_space,
                                   actor_critic.recurrent_hidden_state_size)
-    obs = env.reset().to(device)
+    obs = torch.from_numpy(env.reset()).to(device)
     rollouts.obs[0].copy_(obs)
     rollouts.to(device)
 
@@ -120,6 +120,7 @@ def main(config):
             utils.update_linear_schedule(agent.optimizer, j, num_updates,
                                          agent.optimizer.lr if args.algo == "acktr" else args.lr)
 
+        print("num_steps: ", args.num_steps)
         for step in range(args.num_steps):
             with torch.no_grad():
                 if args.hierarchical_policy and args.task_transition:
@@ -146,17 +147,32 @@ def main(config):
                         rollouts.recurrent_hidden_states[step], rollouts.masks[step],
                         deterministic=False)
 
-            obs, reward, done, infos = env.step(action.cpu())
+            # action = torch.squeeze(action).numpy()
+            # print("action[0]: ", action[0])
+            # print("action[1]: ", action[1])
+            # print("action[2]: ", action[2])
+            # print("action[:3]: ", action[:3])
+            # action[:3] = [-action[1], action[0], action[2]]
+
+            # obs, reward, done, infos = env.step(action.cpu())
+            obs, reward, done, infos = env.step(torch.squeeze(action).numpy())
+            obs = torch.from_numpy(obs)
+            reward = torch.from_numpy(np.array(reward))
+            done = torch.from_numpy(np.array(done)).view(1,-1)
+            # infos = torch.from_numpy(np.array(infos))
 
             if args.render and j % args.vis_interval == 0:
                 env.render()
 
-            for info in infos:
-                if 'episode' in info.keys():
-                    episode_rewards.append(info['episode']['r'])
+            # for info in infos:
+            #     if 'episode' in info.keys():
+            #         episode_rewards.append(info['episode']['r'])
 
-            masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
-            bad_masks = torch.FloatTensor([[0.0] if 'bad_transition' in info.keys() else [1.0] for info in infos])
+            print("done: ", done)
+            print("done: ", done.shape)
+            print("infos: ", infos)
+            masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done.numpy().reshape(1,-1)])
+            bad_masks = torch.FloatTensor([[0.0] if 'bad_transition' in info.keys() else [1.0] for info in [infos]])
 
             if args.hierarchical_policy:
                 # rollouts.insert(obs, task, prev_task, recurrent_hidden_states, recurrent_hidden_task_states, action,
@@ -174,10 +190,10 @@ def main(config):
                         task[i] = torch.Tensor(random.sample(range(args.latent_dim), 1)).to(device)
                 prev_task = task
 
-        mean_rewards.append(np.mean(episode_rewards))
-        median_rewards.append(np.median(episode_rewards))
-        min_rewards.append(np.min(episode_rewards))
-        max_rewards.append(np.max(episode_rewards))
+        # mean_rewards.append(np.mean(episode_rewards))
+        # median_rewards.append(np.median(episode_rewards))
+        # min_rewards.append(np.min(episode_rewards))
+        # max_rewards.append(np.max(episode_rewards))
 
         raw_rewards = copy.deepcopy(rollouts.rewards.view(1,-1))
 
@@ -651,7 +667,7 @@ def get_model(args, env, obs_dim, act_dim, device):
                                                          action_space=env.action_space,
                                                          is_recurrent=True)
 
-    return agent, actor_critic, post, discr, trans
+    return agent, actor_critic, post, trans
 
 def argsparser():
     """
@@ -669,7 +685,7 @@ def argsparser():
     import config.furniture as furniture_config
     furniture_config.add_argument(parser)
 
-    parser.set_defaults(visual_ob=True)
+    # parser.set_defaults(visual_ob=True)
 
     args = parser.parse_args()
     return args
