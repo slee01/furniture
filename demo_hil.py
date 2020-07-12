@@ -17,13 +17,8 @@ We describe how to collect trajectories with a random policy in `main`.
 Please refer to `furniture/rl` for more advanced RL implementations.
 """
 
-
-from collections import OrderedDict
-
-import numpy as np
-
-from env.furniture_baxter import FurnitureBaxterEnv
-import env.transform_utils as T
+# from config import argparse
+from config import argparser
 
 
 def main(args):
@@ -34,7 +29,9 @@ def main(args):
 
     # make environment following arguments
     from env import make_env
-    env = make_env('FurnitureBaxterEnv', args)
+
+    print("Generate environment: ", args.env)
+    env = make_env(args.env, args)
 
     # define a random policy
     def policy_action(ob):
@@ -99,6 +96,7 @@ def argsparser():
 
 
 if __name__ == '__main__':
-    args = argsparser()
+    # args = argsparser()
+    args, unparsed = argparser()
     main(args)
 
