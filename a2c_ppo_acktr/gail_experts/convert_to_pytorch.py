@@ -8,15 +8,16 @@ import torch
 
 """
 python convert_to_pytorch.py --h5-file trajs_halfcheetah.h5
+python convert_to_pytorch.py --pkl-file Baxter_0.pkl | Cursor_7.pkl | Saywer_7.pkl
 """
 
 def main():
     parser = argparse.ArgumentParser(
         'Converts expert trajectories from h5 to pt format.')
     parser.add_argument(
-        '--h5-file',
-        default='trajs_halfcheetah.h5',
-        help='input h5 file',
+        '--pkl-file',
+        default='Baxter_0.pkl',
+        help='input pkl file',
         type=str)
     parser.add_argument(
         '--pt-file',
