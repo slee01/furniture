@@ -3,6 +3,7 @@ import os
 import sys
 import pickle
 import glob
+import copy
 
 import numpy as np
 import torch
@@ -20,6 +21,18 @@ def get_demo_files(demo_file_path):
             demos.append(f)
     return demos
 
+
+def convertObject2TorchArray(featuresArray, target_size):
+    for features in featuresArray:
+        _pad = copy.deepcopy(features[-1])
+
+        while len(features) < target_size:
+            features.append(_pad)
+
+    featuresArray = torch.from_numpy(np.array(featuresArray))
+    return featuresArray
+
+
 def main():
     parser = argparse.ArgumentParser(
         'Converts expert trajectories from h5 to pt format.')
@@ -35,8 +48,8 @@ def main():
         type=str)
     args = parser.parse_args()
 
-    # if args.pt_file is None:
-    #     args.pt_file = os.path.splitext(args.pkl_file)[0] + '.pt'
+    if args.pt_file is None:
+        args.pt_file = os.path.splitext(args.pkl_file)[0] + '.pt'
 
     assert (
             args.pkl_file is not None
@@ -56,12 +69,10 @@ def main():
             demo = pickle.load(f)
 
             print("demo: ", type(demo), demo.keys())
-            print("demo.qpos: ", type(demo['qpos']))
-            for i in range(len(demo['qpos'])):
-                print("i: ", i, demo['qpos'][i])
-            print("demo.actions: ", type(demo['actions']))
+
             # add observations
             for state in demo["obs"]:
+                state = np.concatenate(list(state.values()))
                 states.append(state)
             states.pop()
 
@@ -74,17 +85,26 @@ def main():
                 for reward in demo["rewards"]:
                         rewards.append(reward)
 
-            dataset_size = len(states)
-            print("data: ", args.pkl_file)
-            print("dataset_size: ",  dataset_size)
-            print("states: ", np.array(states).shape)
-            print("actions: ", np.array(actions).shape)
-            print("rewards: ", np.array(rewards).shape)
+            # dataset_size = len(states)
+
+            # print("data: ", file_path)
+            # print("states: ", np.array(states).shape)
+            # print("actions: ", np.array(actions).shape)
+            # print("rewards: ", np.array(rewards).shape)
 
         statesArray.append(states)
         actionsArray.append(actions)
         rewardsArray.append(rewards)
         lenArray.append(len(states))
+
+    statesArray = convertObject2TorchArray(statesArray, np.max(lenArray)).float()
+    actionsArray = convertObject2TorchArray(actionsArray, np.max(lenArray)).float()
+    rewardsArray = convertObject2TorchArray(rewardsArray, np.max(lenArray)).reshape(-1, np.max(lenArray), 1).float()
+    lenArray = torch.from_numpy(np.array(lenArray)).float()
+    print("states: ", statesArray.shape)
+    print("actions: ", actionsArray.shape)
+    print("rewards: ", rewardsArray.shape)
+    print("lens: ", lenArray.shape)
 
     # with h5py.File(args.pkl_file, 'r') as f:
     #     dataset_size = f['obs_B_T_Do'].shape[0]  # full dataset size
@@ -132,10 +152,10 @@ def main():
     # lens: torch.Size([3000])
 
     data = {
-        'states': states,
-        'actions': actions,
-        'rewards': rewards,
-        'lengths': lens
+        'states': statesArray,
+        'actions': actionsArray,
+        'rewards': rewardsArray,
+        'lengths': lenArray
     }
 
     torch.save(data, args.pt_file)
