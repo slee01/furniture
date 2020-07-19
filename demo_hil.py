@@ -68,21 +68,24 @@ def main(config):
     print("   observation shape: ", env.observation_space.shape)
     print("1. policy_lr & task_lr {}, b_lr: {}, discr_lr: {}, postr_lr: {}".format(args.lr, args.b_lr, args.d_lr, args.p_lr))
 
+    # file_name = os.path.join(
+    #     args.gail_experts_dir,
+    #     "trajs_{}_{}.pt".format(args.env_name.split('-')[0].lower(), args.expert_algo))
     file_name = os.path.join(
         args.gail_experts_dir,
-        "trajs_{}_{}.pt".format(args.env_name.split('-')[0].lower(), args.expert_algo))
+        "Baxter_toy_table.pt")
 
-    # gail_train_loader = torch.utils.data.DataLoader(
-    #     expert_dataset.ExpertDataset(args.env_name, file_name),
-    #     batch_size=args.gail_batch_size,
-    #     shuffle=True,
-    #     drop_last=True)
-    #
-    # policy_train_loader = torch.utils.data.DataLoader(
-    #     policy_dataset.PolicyDataset(args.env_name, file_name),
-    #     batch_size=args.gail_batch_size,
-    #     shuffle=True,
-    #     drop_last=True)
+    gail_train_loader = torch.utils.data.DataLoader(
+        expert_dataset.ExpertDataset(args.env_name, file_name),
+        batch_size=args.gail_batch_size,
+        shuffle=True,
+        drop_last=True)
+
+    policy_train_loader = torch.utils.data.DataLoader(
+        policy_dataset.PolicyDataset(args.env_name, file_name),
+        batch_size=args.gail_batch_size,
+        shuffle=True,
+        drop_last=True)
 
     print("************************************************************************************************")
     if args.latent_space == 'continuous':
@@ -168,9 +171,6 @@ def main(config):
             #     if 'episode' in info.keys():
             #         episode_rewards.append(info['episode']['r'])
 
-            print("done: ", done)
-            print("done: ", done.shape)
-            print("infos: ", infos)
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done.numpy().reshape(1,-1)])
             bad_masks = torch.FloatTensor([[0.0] if 'bad_transition' in info.keys() else [1.0] for info in [infos]])
 
@@ -692,5 +692,9 @@ def argsparser():
 
 
 if __name__ == '__main__':
-    args = argsparser()
+    # args = argsparser()
+    args = get_args()
+
+    print("env_id: ", args.env_id)
+    print("num_env: ", args.num_env)
     main(args)
