@@ -100,7 +100,7 @@ def main():
     statesArray = convertObject2TorchArray(statesArray, np.max(lenArray)).float()
     actionsArray = convertObject2TorchArray(actionsArray, np.max(lenArray)).float()
     rewardsArray = convertObject2TorchArray(rewardsArray, np.max(lenArray)).reshape(-1, np.max(lenArray), 1).float()
-    lenArray = torch.from_numpy(np.array(lenArray)).float()
+    lenArray = torch.from_numpy(np.array(lenArray)).long()
     print("states: ", statesArray.shape)
     print("actions: ", actionsArray.shape)
     print("rewards: ", rewardsArray.shape)
