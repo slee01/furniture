@@ -13,6 +13,13 @@ python convert_to_pytorch.py --pkl-file Baxter_0.pkl | Cursor_7.pkl | Saywer_7.p
 """
 
 
+def get_demo_files(demo_file_path):
+    demos = []
+    for f in glob.glob(demo_file_path + "_*"):
+        if os.path.isfile(f):
+            demos.append(f)
+    return demos
+
 def main():
     parser = argparse.ArgumentParser(
         'Converts expert trajectories from h5 to pt format.')
@@ -27,6 +34,11 @@ def main():
         help='output pt file, by default replaces file extension with pt',
         type=str)
     args = parser.parse_args()
+
+    assert (
+            args.pkl_file is not None
+    ), "--demo_path should be set (e.g. demos/Sawyer_toy_table)"
+    demo_files = get_demo_files(args.pkl_file)
 
     if args.pt_file is None:
         args.pt_file = os.path.splitext(args.pkl_file)[0] + '.pt'
