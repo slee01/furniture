@@ -10,6 +10,8 @@ class PolicyDataset(torch.utils.data.Dataset):
             num_trajectories, subsample_frequency = 32, 4
         elif env_id.startswith("Fetch"):
             num_trajectories, subsample_frequency = 128, 4
+        elif env_id.startswith("furniture"):
+            num_trajectories, subsample_frequency = 14, 4
         else:
             num_trajectories, subsample_frequency = 8, 3
 

@@ -5,16 +5,23 @@ import torch.utils.data
 class ExpertDataset(torch.utils.data.Dataset):
     def __init__(self, env_id, file_name):
         all_trajectories = torch.load(file_name)
-
+        print("env_id: ", env_id)
         if env_id.startswith("MountainToy"):
             num_trajectories, subsample_frequency = 256, 4
         elif env_id.startswith("Fetch"):
             num_trajectories, subsample_frequency = 512, 4
+        elif env_id.startswith("furniture"):
+            num_trajectories, subsample_frequency = 14, 4
         else:
             num_trajectories, subsample_frequency = 32, 3
 
         perm = torch.randperm(all_trajectories['states'].size(0))
         idx = perm[:num_trajectories]
+
+        print("env_id: ", env_id)
+        print("num_trajs: ", num_trajectories)
+        print("subsample_frequency: ", subsample_frequency)
+        print("all_trajectories['states'].size(1): ", all_trajectories['states'].size(1))
 
         self.trajectories = {}
         start_idx = torch.randint(0, all_trajectories['states'].size(1) % subsample_frequency,
