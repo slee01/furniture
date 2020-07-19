@@ -57,6 +57,7 @@ def main():
     demo_files = get_demo_files(args.pkl_file)
 
     print("file_path: ", args.pkl_file)
+    print("pt_file: ", args.pt_file)
     print("demo_files: ", demo_files)
 
     statesArray, actionsArray, rewardsArray, lenArray = [], [], [], []
@@ -67,8 +68,7 @@ def main():
 
         with open(file_path, "rb") as f:
             demo = pickle.load(f)
-
-            print("demo: ", type(demo), demo.keys())
+            # print("demo: ", type(demo), demo.keys())
 
             # add observations
             for state in demo["obs"]:
@@ -105,45 +105,6 @@ def main():
     print("actions: ", actionsArray.shape)
     print("rewards: ", rewardsArray.shape)
     print("lens: ", lenArray.shape)
-
-    # with h5py.File(args.pkl_file, 'r') as f:
-    #     dataset_size = f['obs_B_T_Do'].shape[0]  # full dataset size
-    #
-    #     states = f['obs_B_T_Do'][:dataset_size, ...][...]
-    #     actions = f['a_B_T_Da'][:dataset_size, ...][...]
-    #     rewards = f['r_B_T'][:dataset_size, ...][...]
-    #     lens = f['len_B'][:dataset_size, ...][...]
-    #
-    #     print("rewards: ", rewards.shape)
-    #     for i in range(dataset_size):
-    #         print(i, " rewards: ", np.sum(rewards[i]))
-    #
-    #     # (200, 1000, 1, 1) vs. (200, 1000,
-    #     if len(states.shape) >= 4:
-    #         print("states: ", states.shape)
-    #         states = np.squeeze(states, axis=2)
-    #         # states = np.squeeze(states)
-    #         print("states: ", states.shape)
-    #     if len(actions.shape) >= 4:
-    #         print("actions: ", actions.shape)
-    #         actions = np.squeeze(actions, axis=2)
-    #         # actions = np.squeeze(actions)
-    #         print("actions: ", actions.shape)
-    #     if len(rewards.shape) >= 4:
-    #         print("rewards: ", rewards.shape)
-    #         rewards = np.squeeze(rewards, axis=2)
-    #         # rewards = np.squeeze(rewards)
-    #         print("rewards: ", rewards.shape)
-    #     if len(lens.shape) >= 2:
-    #         print("lens: ", lens.shape)
-    #         lens = np.squeeze(lens, axis=1)
-    #         # lens = np.squeeze(lens)
-    #         print("lens: ", lens.shape)
-    #
-    #     states = torch.from_numpy(states).float()
-    #     actions = torch.from_numpy(actions).float()
-    #     rewards = torch.from_numpy(rewards).float()
-    #     lens = torch.from_numpy(lens).long()
 
     # (trajs, episodes, features)
     # states: torch.Size([3000, 50, 28])
