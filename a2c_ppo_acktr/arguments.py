@@ -1,10 +1,14 @@
 import argparse
-
 import torch
+
+from util import str2bool
+import config.furniture as furniture_config
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description='RL')
+    # parser = argparse.ArgumentParser(description='RL')
+    parser = argparse.ArgumentParser("Demo for IKEA Furniture Assembly Environment")
+
     parser.add_argument(
         '--carla-ego-vehicle-filter', default='vehicle.lincoln*', help='blueprint for ego vehicle')
     parser.add_argument(
@@ -126,11 +130,11 @@ def get_args():
         action='store_true',
         default=False,
         help='save results')
-    parser.add_argument(
-        '--render',
-        action='store_true',
-        default=False,
-        help='render simulator')
+    # parser.add_argument(
+    #     '--render',
+    #     action='store_true',
+    #     default=False,
+    #     help='render simulator')
     parser.add_argument(
         '--load-model',
         action='store_true',
@@ -424,7 +428,7 @@ def get_args():
         help='directory to save agent models (default: ./trained_models/)')
     parser.add_argument(
         '--gail-experts-dir',
-        default='./gail_experts',
+        default='./a2c_ppo_acktr/gail_experts',
         help='directory that contains expert demonstrations for gail')
     parser.add_argument(
         '--load-dir',
@@ -466,6 +470,30 @@ def get_args():
         action='store_true',
         default=False,
         help='use a linear schedule on the learning rate')
+
+    parser.add_argument(
+        '--env-id',
+        type=str,
+        default='furniture-baxter-v0',
+        help='environment to train on')
+
+    parser.add_argument(
+        '--num-env',
+        type=int,
+        default=1,
+        help='the number of environments')
+    # parser.add_argument(
+        # '--seed',
+        # type=int,
+        # default=123)
+    parser.add_argument(
+        '--debug',
+        type=str2bool,
+        default=False)
+
+    furniture_config.add_argument(parser)
+    # parser.set_defaults(visual_ob=True)
+
     args = parser.parse_args()
 
     args.cuda = not args.no_cuda and torch.cuda.is_available()
