@@ -1,0 +1,6 @@
+Found path: /media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/binary/Furniture.x86_64
+Mono path[0] = '/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/binary/Furniture_Data/Managed'
+Mono config path = '/media/jinwoo/Disk/Research_linux/Workspace/Research/Compound_task/furniture-dev/furniture/binary/Furniture_Data/MonoBleedingEdge/etc'
+Preloaded 'libmjplugin155.so'
+Preloaded 'ScreenSelector.so'
+Desktop is 0 x 0 @ 0 Hz

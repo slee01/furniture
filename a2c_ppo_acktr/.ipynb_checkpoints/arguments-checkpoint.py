@@ -294,7 +294,7 @@ def get_args():
     parser.add_argument(
         '--posterior-reward-coef',
         type=float,
-        default=0.1,
+        default=1.0,
         help='posterior reward term coefficient (default: 0.1)')
     parser.add_argument(
         '--discr-reward-coef',

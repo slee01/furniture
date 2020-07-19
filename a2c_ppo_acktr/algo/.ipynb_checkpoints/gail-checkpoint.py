@@ -11,7 +11,7 @@ from a2c_ppo_acktr import utils
 
 
 class Discriminator(nn.Module):
-    def __init__(self, input_dim, hidden_dim, use_latent, latent_dim, d_lr, device, good_end, extract_obs, action_space):
+    def __init__(self, input_dim, hidden_dim, use_latent, latent_dim, latent_space, d_lr, device, good_end, extract_obs, action_space):
         super(Discriminator, self).__init__()
 
         self.device = device
@@ -21,6 +21,7 @@ class Discriminator(nn.Module):
         self.good_end = good_end
         self.extract_obs = extract_obs
         self.action_space = action_space.__class__.__name__
+        self.latent_space = latent_space
 
         if self.action_space == "Discrete":
             self.action_dim = action_space.n
@@ -34,6 +35,7 @@ class Discriminator(nn.Module):
         if use_latent:
             input_dim += latent_dim
 
+        # print("gail.py", input_dim, hidden_dim)
         self.trunk = nn.Sequential(
             nn.Linear(input_dim, hidden_dim), nn.Tanh(),
             nn.Linear(hidden_dim, hidden_dim), nn.Tanh(),
@@ -103,10 +105,12 @@ class Discriminator(nn.Module):
                 policy_states, policy_actions = policy_batch[0], policy_batch[2].float()
 
             expert_states, expert_actions = expert_batch
-
             if self.action_space == "Discrete":
                 policy_actions = utils.get_one_hot_vector(policy_actions, self.action_dim)
                 expert_actions = utils.get_one_hot_vector(expert_actions, self.action_dim)
+            
+            if self.latent_space == "discrete":  # Modified -JW
+                policy_tasks = utils.get_one_hot_vector(policy_tasks, self.latent_dim)
 
             policy_states += self.noise_dist.sample(policy_states.shape).to(self.device)
             # policy_tasks, policy_task_features = posterior.act(policy_states, policy_actions, mean_mode=False)
@@ -124,8 +128,11 @@ class Discriminator(nn.Module):
             expert_actions = expert_actions.to(self.device)
             expert_tasks, expert_task_features = posterior.act(expert_states, expert_actions, mean_mode=True)
             expert_tasks = expert_tasks.detach()
+            if self.latent_space == "discrete":
+                expert_tasks = utils.get_one_hot_vector(expert_tasks, self.latent_dim)
 
             expert_inputs = torch.cat([expert_states, expert_tasks, expert_actions], dim=1)
+#             print("gail.py: ", expert_states.shape, expert_tasks.shape, expert_actions.shape)
             expert_ds = self.trunk(expert_inputs)
 
             expert_loss = F.binary_cross_entropy_with_logits(
@@ -155,6 +162,9 @@ class Discriminator(nn.Module):
 
             if self.action_space == "Discrete":
                 action = utils.get_one_hot_vector(action, self.action_dim)
+                
+            if self.latent_space == "discrete":
+                task = utils.get_one_hot_vector(task, self.latent_dim)
 
             d = self.trunk(torch.cat([state, task, action.float()], dim=1))
             s = torch.sigmoid(d)
@@ -280,6 +290,7 @@ class WassersteinDiscriminator(nn.Module):
             if self.action_space == "Discrete":
                 policy_actions = utils.get_one_hot_vector(policy_actions, self.action_dim)
                 expert_actions = utils.get_one_hot_vector(expert_actions, self.action_dim)
+                policy_tasks
 
             policy_states += self.noise_dist.sample(policy_states.shape).to(self.device)
             policy_inputs = torch.cat([policy_states, policy_actions], dim=1)

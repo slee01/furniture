@@ -365,7 +365,7 @@ class LatentRolloutStorage(object):
                 adv_targ = None
             else:
                 adv_targ = advantages.view(-1, 1)[indices]
-
+            # print("storage.py: ", self.tasks.shape)
             # recurrent_hidden_states_batch, recurrent_hidden_task_states_batch, \
             yield obs_batch, task_batch, prev_task_batch, \
                   recurrent_hidden_states_batch, \
@@ -374,6 +374,7 @@ class LatentRolloutStorage(object):
     # TODO: update to get task variable
     def recurrent_generator(self, advantages, num_mini_batch):
         num_processes = self.rewards.size(1)
+
         assert num_processes >= num_mini_batch, (
             "PPO requires the number of processes ({}) "
             "to be greater than or equal to the number of "

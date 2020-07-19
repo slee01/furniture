@@ -1,0 +1,78 @@
+--Training--
+
+<MountainToyCar-v1>
+
+python main.py --env-name "MountainToyCar-v1" --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 \
+--lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 \
+--num-env-steps 1026048 --use-linear-lr-decay --use-proper-time-limits \
+--gail --extract-obs --gail-algo standard --expert-algo ppo \
+--use-latent --latent-dim 1 --hierarchical-policy --task-transition --posterior \
+--save-date 200713 --eval-interval 1
+
+python main.py --env-name "MountainToyCar-v1" --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 \
+--lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 \
+--num-env-steps 1026048 --use-linear-lr-decay --use-proper-time-limits \
+--gail --extract-obs --gail-algo standard --expert-algo ppo \
+--use-latent --latent-dim 1 --hierarchical-policy --task-transition --posterior \
+--save-date 200714_cont_cur_recur --eval-interval 1 --task-curiosity-reward --tensorboard-save \
+
+python main.py --env-name "MountainToyCar-v1" --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 \
+--lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 \
+--num-env-steps 1026048 --use-linear-lr-decay --use-proper-time-limits \
+--gail --extract-obs --gail-algo standard --expert-algo ppo \
+--use-latent --latent-dim 4 --hierarchical-policy --task-transition --posterior \
+--save-date 200719_cont_ld4 --eval-interval 1 \
+--task-curiosity-reward --tensorboard-save
+
+### check ###
+python main.py --env-name "MountainToyCar-v1" --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 \
+--lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 \
+--num-env-steps 1026048 --use-linear-lr-decay --use-proper-time-limits \
+--gail --extract-obs --gail-algo standard --expert-algo ppo \
+--use-latent --latent-dim 4 --hierarchical-policy --task-transition --posterior \
+--save-date 200719_disc_trcoef0 --eval-interval 1 \
+ --task-curiosity-reward --latent-space discrete --tensorboard-save --task-reward-coef 0
+ 
+<MountainToyCarContinuous-v1>
+
+python main.py --env-name "MountainToyCarContinuous-v1" --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 \
+--lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 \
+--num-env-steps 1026048 --use-linear-lr-decay --use-proper-time-limits \
+--gail --extract-obs --gail-algo standard --expert-algo ppo \
+--use-latent --latent-dim 1 --hierarchical-policy --task-transition --posterior \
+--save-date 200219 --eval-interval 1
+
+
+<FetchPickAndPlace-v1>
+
+python main.py --env-name "FetchPickAndPlace-v1" --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 \
+--lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 \
+--num-env-steps 1230848 --use-linear-lr-decay --use-proper-time-limits \
+--gail --gail-algo standard --expert-algo her --load-model --load-date 200219 --pretrain-algo cvae \
+--task-transition --use-latent --latent-dim 4 --hierarchical-policy --posterior \
+--reset-posterior --reset-transition --save-date 200710 --eval-interval 1
+
+
+
+--Testing--
+
+<MountainToyCar-v1>
+
+python enjoy.py --env-name MountainToyCar-v1 --algo ppo --gail-algo standard --pretrain-algo none --test-model trained \
+--episode 100 --use-latent --latent-dim 1 --task-transition --save-date 200714 --load-date 200713_wo_cur --save-result
+
+python enjoy.py --env-name MountainToyCar-v1 --algo ppo --gail-algo standard --pretrain-algo none --test-model trained \
+--episode 100 --use-latent --latent-dim 1 --task-transition --save-date 200706 --load-date 200706 --save-result \
+--latent-space discrete
+
+
+<MountainToyCarContinuous-v1>
+
+python enjoy.py --env-name MountainToyCarContinuous-v1 --algo ppo --gail-algo standard --pretrain-algo none --test-model trained \
+--episode 100 --use-latent --latent-dim 1 --task-transition --save-date 200219 --load-date 200219
+
+
+<FetchPickAndPlace-v1>
+
+python enjoy.py --env-name FetchPickAndPlace-v1 --algo ppo --gail-algo standard --pretrain-algo cvae --test-model trained \
+--episode 100 --save-date 200219 --load-date 200219 --use-latent --latent-dim 4 --task-transition --seed 1

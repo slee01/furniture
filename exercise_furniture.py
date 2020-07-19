@@ -3,7 +3,7 @@ import time
 import gym
 import imageio
 
-from furniture.env import make_vec_env
+from env import make_vec_env
 
 
 def main(config):

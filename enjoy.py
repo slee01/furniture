@@ -8,6 +8,8 @@ import h5py
 import torch
 import gym
 
+from scipy import sparse
+
 from a2c_ppo_acktr import algo, utils
 from a2c_ppo_acktr.arguments import get_args
 from a2c_ppo_acktr.envs import VecPyTorch, make_vec_envs
@@ -131,7 +133,7 @@ else:
 
     reset_model_machines(agent.actor_critic, device)
 
-env = make_vec_envs(args.env_name, args.seed + 1000, 1, None, None,
+env = make_vec_envs(args, args.env_name, args.seed + 1000, 1, None, None,
                     device='cpu', allow_early_resets=False)
 
 # Get a render function and vectorize environments
@@ -181,14 +183,18 @@ for e in range(args.episode):
 
     while not done:
         with torch.no_grad():
-            if args.use_latent and args.task_transition:
-                task, task_feature, recurrent_hidden_task_states = trans.act(obs, prev_task,
-                                                      recurrent_hidden_task_states,
-                                                      masks,
-                                                      mean_mode=True,
-                                                      use_random_latent=args.use_random_latent,
-                                                      use_constant_latent=args.use_constant_latent,
-                                                      constant_latent=args.constant_latent)
+            if args.use_latent and args.task_transition:  # recurrent_hidden_task_states, masks,
+#                 task, task_feature, recurrent_hidden_task_states = trans.act(obs, prev_task,
+#                                                                              mean_mode=True,
+#                                                                              use_random_latent=args.use_random_latent,
+#                                                                              use_constant_latent=args.use_constant_latent,
+#                                                                              constant_latent=args.constant_latent)
+                task, task_feature = trans.act(obs, prev_task,
+                                               mean_mode=True,
+                                               use_random_latent=args.use_random_latent,
+                                               use_constant_latent=args.use_constant_latent,
+                                               constant_latent=args.constant_latent)
+    
                 if args.latent_space == 'continuous':
                     task_mu, task_sigma = trans.get_dist_params(task_feature)
                 elif args.latent_space == 'discrete':
@@ -223,10 +229,12 @@ for e in range(args.episode):
         rewards.append(reward.cpu().numpy())
 
         if args.use_latent and args.task_transition:
-            task_mus.append(task_mu.cpu().numpy())
-            task_sigmas.append(task_sigma.cpu().numpy())
-            task_logits.append(task_logit.cpu().numpy())
             tasks.append(task.cpu().numpy())
+            if args.latent_space == 'continuous':
+                task_mus.append(task_mu.cpu().numpy())
+                task_sigmas.append(task_sigma.cpu().numpy())
+            elif args.latent_space == 'discrete':
+                task_logits.append(task_logit.cpu().numpy())
 
             prev_task = task
 
@@ -258,11 +266,16 @@ for e in range(args.episode):
     if args.save_result:
         if args.use_latent and args.task_transition:
             task_mus, task_sigmas, task_logits, tasks = np.array(task_mus), np.array(task_sigmas), np.array(task_logits), np.array(tasks)
-            task_mus, task_sigmas, task_logits, tasks = np.squeeze(task_mus, axis=1), np.squeeze(task_sigmas, axis=1), np.squeeze(task_logits, axis=1), np.squeeze(tasks, axis=1)
+            if args.latent_space == 'continuous':
+                task_mus, task_sigmas, tasks = np.squeeze(task_mus, axis=1), np.squeeze(task_sigmas, axis=1), np.squeeze(tasks, axis=1)
+            elif args.latent_space == 'discrete':
+                task_logits, tasks = np.squeeze(task_logits, axis=1), np.squeeze(tasks, axis=1)
 
-            assert len(tasks) == len(task_mus), 'len(states) != len(actions)'
-            assert len(tasks) == len(task_sigmas), 'len(states) != len(rewards)'
-            assert len(tasks) == len(task_logits), 'len(tasks) != len(rewards)'
+            if args.latent_space == 'continuous':
+                assert len(tasks) == len(task_mus), 'len(states) != len(actions)'
+                assert len(tasks) == len(task_sigmas), 'len(states) != len(rewards)'
+            elif args.latent_space == 'discrete':
+                assert len(tasks) == len(task_logits), 'len(tasks) != len(rewards)'
             assert len(tasks) == len(rewards), 'len(tasks) != len(rewards)'
 
         states = np.squeeze(np.array(states), axis=1)
@@ -270,7 +283,11 @@ for e in range(args.episode):
         rewards = np.squeeze(np.array(rewards), axis=1)
 
         if args.use_latent and args.task_transition:
-            task_data = np.hstack([states, actions, rewards, task_mus, task_sigmas, task_logits, tasks])
+            if args.latent_space == 'continuous':
+#                 task_data = np.hstack([states, actions, rewards, task_mus, task_sigmas, tasks])
+                task_data = np.hstack([states, actions, rewards, task_mus, task_sigmas, tasks])
+            elif args.latent_space == 'discrete':
+                task_data = np.hstack([states, actions, rewards, task_logits, tasks])
         else:
             task_data = np.hstack([states, actions, rewards])
 

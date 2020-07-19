@@ -92,7 +92,6 @@ class TaskTransitionModel(nn.Module):
 
         if self.latent_space == "discrete":
             prev_tasks = utils.get_one_hot_vector(prev_tasks, self.latent_dim)
-
         inputs = torch.cat((obs, prev_tasks), dim=-1)
         # task_features, task_hxs = self.trunk(inputs, rnn_hxs, masks)
         task_features = self.trunk(inputs)
@@ -100,6 +99,7 @@ class TaskTransitionModel(nn.Module):
         # task_mus, task_sigmas = self.split_parameters(task_features)
         # tasks = self.sample_task(task_mus, task_sigmas, mean_mode)
         dist = self.dist(task_features)
+#         print("task.py: ", inputs.shape)
         if mean_mode:
             tasks = dist.mode().float()
         else:

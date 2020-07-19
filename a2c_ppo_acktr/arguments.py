@@ -466,6 +466,11 @@ def get_args():
         action='store_true',
         default=False,
         help='use a linear schedule on the learning rate')
+
+    parser.add_argument('--tensorboard-save',
+                        action='store_true',
+                        default=False,
+                        help='save summary to tensorboard')
     args = parser.parse_args()
 
     args.cuda = not args.no_cuda and torch.cuda.is_available()
